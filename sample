@@ -1,0 +1,32 @@
+#JS
+$("#download").click(function(){
+			event.preventDefault();
+			var sf_id = $("#subjects").val();
+	        var academic_year = $("#academic_year").val();
+	        var marks_type = $("#marks_type").val();
+	        
+            if (sf_id == "" || marks_type == '0'){
+                 alert("Please select all fields..!");
+            }else{
+			    var page = base_url+'admin_home/IAMarksStudentsDownload'; 
+			    $.ajax({'type':'POST',
+				    'url':page,
+				    'data':{'academic_year':academic_year, 'sf_id':sf_id, marks_type:marks_type},
+				    'dataType':'json',
+				    'cache':false,
+				    'success':function(data){
+				        var $a = $("<a>");
+                        $a.attr("href",data.file);
+                        $("body").append($a);
+                        $a.attr("download","file.xls");
+                        $a[0].click();
+                        $a.remove();
+				    }
+			    });
+            }
+		});
+    
+    
+    #PHP
+    $response =  array('op' => 'ok','file' => "data:application/vnd.ms-excel;base64,".base64_encode($details));
+    die(json_encode($response));
